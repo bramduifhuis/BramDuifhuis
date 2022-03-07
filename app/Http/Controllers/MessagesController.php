@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Messages;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MessagesController extends Controller
 {
@@ -14,7 +15,9 @@ class MessagesController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Messages::all();
+        
+        return view('index',compact('posts'));
     }
 
     /**
@@ -24,7 +27,7 @@ class MessagesController extends Controller
      */
     public function create()
     {
-        //
+        return view('create');
     }
 
     /**
@@ -35,7 +38,21 @@ class MessagesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+
+        $request->validate([
+            'title' => 'required|max:255',
+            'content' => 'required',
+        ]);
+        // $validatedData->merge(["user_id"=>auth()->id()]);
+        $data = $request->all();
+        $data["user_id"] = auth()->id();
+        
+
+        $show = Messages::create($data);
+   
+        return redirect('/posts');
+
     }
 
     /**
