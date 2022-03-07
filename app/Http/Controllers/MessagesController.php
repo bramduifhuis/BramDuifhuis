@@ -15,7 +15,7 @@ class MessagesController extends Controller
      */
     public function index()
     {
-        $posts = Messages::all();
+        $posts = Messages::select("messages.*", "users.name")->join('users', 'messages.user_id', '=', 'users.id')->get();
         
         return view('index',compact('posts'));
     }
