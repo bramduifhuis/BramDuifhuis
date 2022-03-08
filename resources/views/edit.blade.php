@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Create a post') }}
+            {{ __('Update a post') }}
         </h2>
     </x-slot>
 
@@ -11,7 +11,7 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                         <div class="card uper">
                             <div class="card-header">
-                                Add Post
+                                Update Post
                             </div>
                             <div class="card-body">
                                 @if ($errors->any())
@@ -23,17 +23,18 @@
                                         </ul>
                                     </div><br />
                                 @endif
-                            <form method="post" action="{{ route('posts.store') }}">
+                            <form method="post" action="{{ route('posts.update', $post->id) }}">
                                 <div class="form-group">
                                     @csrf
+                                    @method('PATCH')
                                     <label for="title">Post title:</label>
-                                    <input type="text" class="form-control" name="title"/>
+                                    <input type="text" class="form-control" name="title" value="{{$post->title}}"/>
                                 </div>
                                 <div class="form-group">
                                     <label for="content">Post content:</label>
-                                    <textarea type="text" class="form-control" name="content"></textarea>
+                                    <textarea type="text" class="form-control" name="content">{{$post->content}}</textarea>
                                 </div>
-                                <button type="submit" class="btn btn-primary">Add Post</button>
+                                <button type="submit" class="btn btn-primary">Update Post</button>
                             </form>
                         </div>
                     </div>   

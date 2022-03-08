@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Messages;
+use App\Models\User;
+use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
 
 class MessagesController extends Controller
@@ -15,7 +18,7 @@ class MessagesController extends Controller
      */
     public function index()
     {
-        $posts = Messages::select("messages.*", "users.name")->join('users', 'messages.user_id', '=', 'users.id')->get();
+        $posts = Messages::select("messages.*", "users.name")->join('users', 'messages.user_id', '=', 'users.id')->orderBy('messages.created_at', 'desc')->get();
         
         return view('index',compact('posts'));
     }
@@ -61,9 +64,13 @@ class MessagesController extends Controller
      * @param  \App\Models\Messages  $messages
      * @return \Illuminate\Http\Response
      */
-    public function show(Messages $messages)
+    public function show(Messages $messages, $id)
     {
-        //
+        $post = Messages::select("messages.*", "users.name")->join('users', 'messages.user_id', '=', 'users.id')->where('messages.id', "=", $id)->first();
+        
+        
+        return view('show',compact('post'));
+        
     }
 
     /**
@@ -72,8 +79,10 @@ class MessagesController extends Controller
      * @param  \App\Models\Messages  $messages
      * @return \Illuminate\Http\Response
      */
-    public function edit(Messages $messages)
+    public function edit(Messages $messages, $id)
     {
+        $post = Messages::select("messages.*", "users.name")->join('users', 'messages.user_id', '=', 'users.id')->where('messages.id', "=", $id)->first();
+        return view("edit", compact("post"));
         //
     }
 
@@ -84,9 +93,19 @@ class MessagesController extends Controller
      * @param  \App\Models\Messages  $messages
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Messages $messages)
+    public function update(Request $request, $id)
     {
-        //
+       
+        $validatedData = $request->validate([
+            'title' => 'required|max:255',
+            'content' => 'required',
+        ]);
+        
+        // $data = $request->all();
+        // $data["user_id"] = auth()->id();
+        Messages::whereId($id)->update($validatedData);
+
+        return redirect('/posts');
     }
 
     /**
@@ -95,8 +114,34 @@ class MessagesController extends Controller
      * @param  \App\Models\Messages  $messages
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Messages $messages)
+    public function destroy(Messages $messages, $id)
     {
-        //
+        $post = Messages::findOrFail($id);
+        $post->delete();
+        return redirect('/posts');
+
+    }
+
+    
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Messages  $messages
+     * @return \Illuminate\Http\Response
+     */
+    public function stats(Messages $messages)
+    {
+       $stats =[ "messageCount" => Messages::count(),
+       "userCount"=>  User::count(),
+    ];
+        return view('welcome',compact('stats'));
+    }
+
+    public function dashboard(Messages $messages)
+    {
+        $posts = Messages::select("messages.*", "users.name")->join('users', 'messages.user_id', '=', 'users.id')->where('users.id', "=", auth()->id())->get();
+        return view('dashboard',compact('posts'));
+        
+
     }
 }

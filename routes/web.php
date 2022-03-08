@@ -14,13 +14,9 @@ use App\Http\Controllers\MessagesController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('index');
+Route::get('/', [MessagesController::class, 'stats'])->name('index');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+Route::get('/dashboard', [MessagesController::class, 'dashboard'])->middleware(['auth'])->name('dashboard');
 
 Route::resource('posts', MessagesController::class);
 
