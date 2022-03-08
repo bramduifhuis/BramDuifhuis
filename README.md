@@ -7,3 +7,4 @@ functies:
 3. Je kan op de index pagina statistieken zien over de pagina
 4. Je kan alle post zien als niet bent ingelogd
 5. Je kan elke post bewerken en verwijderen als je bent ingelogd
+
