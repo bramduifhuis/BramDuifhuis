@@ -47,12 +47,12 @@ class MessagesController extends Controller
             'title' => 'required|max:255',
             'content' => 'required',
         ]);
-        // $validatedData->merge(["user_id"=>auth()->id()]);
+        
         $data = $request->all();
         $data["user_id"] = auth()->id();
         
 
-        $show = Messages::create($data);
+        Messages::create($data);
    
         return redirect('/posts');
 
@@ -101,8 +101,7 @@ class MessagesController extends Controller
             'content' => 'required',
         ]);
         
-        // $data = $request->all();
-        // $data["user_id"] = auth()->id();
+        
         Messages::whereId($id)->update($validatedData);
 
         return redirect('/posts');
